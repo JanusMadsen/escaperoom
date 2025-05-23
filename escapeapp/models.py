@@ -1,8 +1,9 @@
 from django.db import models
 
-# Create your models here.
+class Mushroom(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='media/mushrooms/')
+    is_correct = models.BooleanField(default=False)
 
-class RoomState(models.Model):
-    door_open = models.BooleanField(default=False)
-    lock_code = models.CharField(max_length=16, default="1234")  # Set your desired code length and default
-    user_input = models.CharField(max_length=16, blank=True, default="")
+    def __str__(self):
+        return self.name

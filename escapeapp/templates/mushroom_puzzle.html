@@ -1,0 +1,16 @@
+<h2>🌲 Forager's Forest</h2>
+<p>Select the edible mushroom to continue:</p>
+
+<form method="post">
+    {% csrf_token %}
+    {% for mushroom in mushrooms %}
+        <div>
+            <img src="{{ mushroom.image.url }}" alt="{{ mushroom.name }}" style="max-width:200px;">
+            <p>{{ mushroom.name }}</p>
+            <input type="radio" name="mushroom" value="{{ mushroom.id }}">
+        </div>
+    {% endfor %}
+    <button type="submit">Submit</button>
+</form>
+
+<p>{{ message }}</p>

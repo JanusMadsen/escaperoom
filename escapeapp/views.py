@@ -1,31 +1,21 @@
 from django.shortcuts import render, redirect
-from .models import RoomState
+from .models import Mushroom
+import random
 
-# Reset the level (door closed) at server startup
-def reset_room_state():
-    state, _ = RoomState.objects.get_or_create(pk=1)
-    state.door_open = False
-    state.save()
+def mushroom_puzzle(request):
+    mushrooms = list(Mushroom.objects.all())
+    options = random.sample(mushrooms, min(4, len(mushrooms)))  # Show 4 random mushrooms
+    message = ''
 
-try:
-    reset_room_state()
-except Exception:
-    # Database might not be ready during migrations, ignore errors at import time
-    pass
-
-def home(request):
-    # Get or create the room state (single room for simplicity)
-    state, _ = RoomState.objects.get_or_create(pk=1)
-    message = ""
-    if request.method == "POST":
-        code = request.POST.get("code", "")
-        state.user_input = code
-        if code == state.lock_code:
-            state.door_open = True
-            message = "Correct code! The door is open."
+    if request.method == 'POST':
+        chosen_id = request.POST.get('mushroom')
+        if Mushroom.objects.filter(id=chosen_id, is_correct=True).exists():
+            message = 'Correct! You’ve found the right mushroom.'
+            # Redirect or show next scene
         else:
-            state.door_open = False
-            message = "Incorrect code. Try again."
-        state.save()
-        return render(request, 'home.html', {'door_open': state.door_open, 'message': message, 'user_input': state.user_input})
-    return render(request, 'home.html', {'door_open': state.door_open, 'message': message, 'user_input': state.user_input})
+            message = 'Not quite, try again!'
+
+    return render(request, 'mushroom_puzzle.html', {
+        'mushrooms': options,
+        'message': message,
+    })
