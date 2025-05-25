@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to the Summerhouse</title>
+    <style>
+        body {
+            margin: 0;
+            background-image: url("{% static 'images/sommerhus.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            font-family: sans-serif;
+        }
+
+        .button {
+            position: absolute;
+            padding: 10px 20px;
+            background-color: rgba(255,255,255,0.8);
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        #mushroom { top: 60%; left: 20%; }
+        #sourdough { top: 65%; left: 45%; }
+        #boardgame { top: 60%; left: 70%; }
+        #running { top: 75%; left: 80%; }
+
+        #final-code {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        input[type="text"] {
+            padding: 6px;
+            width: 120px;
+        }
+    </style>
+</head>
+<body>
+    <div id="mushroom" class="button" onclick="location.href='{% url 'mushroom_puzzle' %}'">🌲 Forest</div>
+    <div id="sourdough" class="button" onclick="location.href='{% url 'sourdough_puzzle' %}'">🥖 Kitchen</div>
+    <div id="boardgame" class="button" onclick="location.href='{% url 'boardgame_puzzle' %}'">🎲 Game Room</div>
+    <div id="running" class="button" onclick="location.href='{% url 'berlin_half_puzzle' %}'">🏃‍♀️ Track</div>
+
+    <div id="final-code">
+        <form method="post">
+            {% csrf_token %}
+            <label for="code">Enter final code:</label>
+            <input type="text" name="code" placeholder="XXXX" required>
+            <button type="submit">Unlock</button>
+        </form>
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

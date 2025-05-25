@@ -1,0 +1,23 @@
+<h2>🏃‍♀️ The Berlin Half Marathon</h2>
+
+<p>
+    The day was warm, the wind was light, and the streets of Berlin were buzzing.
+    Somewhere along the Elbe, you ran like never before.
+</p>
+
+<p>
+    Bib number: <strong>14613</strong><br>
+    Location: <em>Berlin</em><br>
+    Year: <strong>2023</strong><br>
+    Distance: <strong>21.1 km</strong>
+</p>
+
+<p>Enter your official finish time to unlock the next step:</p>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="answer" placeholder="HH:MM:SS">
+    <button type="submit">Submit</button>
+</form>
+
+<p style="color: {% if success %}green{% else %}red{% endif %};">{{ message }}</p>

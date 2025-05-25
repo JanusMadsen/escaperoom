@@ -23,4 +23,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('mushroom/', views.mushroom_puzzle, name='mushroom_puzzle'),
+    path('sourdough/', views.sourdough_puzzle, name='sourdough_puzzle'),
+    path('boardgames/', views.boardgame_puzzle, name='boardgame_puzzle'),
+    path('berlin/', views.berlin_half_puzzle, name='berlin_half_puzzle'),
+    path('summerhouse/final/', views.summerhouse_final, name='summerhouse_final'),
+    path('summerhouse/', views.summerhouse_landing, name='summerhouse_landing'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

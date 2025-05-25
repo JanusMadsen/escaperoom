@@ -1,0 +1,18 @@
+<h2>🍞 The Sourdough Lab</h2>
+<p>Arrange the sourdough baking steps in the correct order:</p>
+
+<form method="post">
+    {% csrf_token %}
+    {% for step in steps %}
+        <label>
+            <select name="step">
+                {% for s in steps %}
+                    <option value="{{ s.id }}">{{ s.name }}</option>
+                {% endfor %}
+            </select>
+        </label><br>
+    {% endfor %}
+    <button type="submit">Submit</button>
+</form>
+
+<p>{{ message }}</p>

@@ -1,0 +1,15 @@
+<h2>🎲 The Boardgame Table</h2>
+<p>Answer these boardgame questions to unlock your next clue!</p>
+
+<form method="post">
+    {% csrf_token %}
+    {% for q in questions %}
+        <p><strong>{{ q.question }}</strong></p>
+        <label><input type="radio" name="question_{{ q.id }}" value="A"> {{ q.option_a }}</label><br>
+        <label><input type="radio" name="question_{{ q.id }}" value="B"> {{ q.option_b }}</label><br>
+        <label><input type="radio" name="question_{{ q.id }}" value="C"> {{ q.option_c }}</label><br><br>
+    {% endfor %}
+    <button type="submit">Submit</button>
+</form>
+
+<p>{{ message }}</p>
