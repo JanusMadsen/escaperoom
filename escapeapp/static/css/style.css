@@ -1,0 +1,118 @@
+/* Fælles layout */
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #f7f3e8;
+    text-align: center;
+}
+
+/* 🌲 Baggrund til svampescenen */
+.forest-bg {
+    background: url('../images/forest_background.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* 🏡 Baggrund til sommerhus-siden */
+.summerhouse-bg {
+    background-image: url('../images/sommerhus.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
+
+/* 🍄 Svampe */
+.mushroom {
+    position: absolute;
+    width: 80px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+.mushroom:hover {
+    transform: scale(1.8);
+    z-index: 10;
+}
+.number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 8px;
+    font-weight: bold;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 2px 4px;
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.mushroom:hover .number {
+    opacity: 0.8;
+}
+#mushroomContainer {
+    position: relative;
+    width: 100vw;
+    height: 80vh;
+}
+#codeBox {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+/* 🥖 Surdej */
+.clock {
+    width: 150px;
+}
+.dough-img {
+    width: 300px;
+    margin: 20px auto;
+}
+.step-button {
+    padding: 10px 20px;
+    margin: 8px;
+    font-size: 16px;
+}
+.message {
+    font-size: 18px;
+    margin: 15px;
+    color: #444;
+}
+input[type="number"], input[type="text"] {
+    padding: 6px;
+    width: 120px;
+    font-size: 16px;
+}
+
+/* 🎨 Fælles knap-stil */
+.button {
+    position: absolute;
+    padding: 10px 20px;
+    background-color: rgba(255,255,255,0.8);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* 🏡 Navigation */
+#landing { top: 5%; left: 2%; z-index: 1000; }
+#boardgame { top: 60%; left: 22%; }
+#mushroom { top: 65%; left: 5%; }
+#sourdough { top: 60%; left: 63%; }
+#running { top: 89%; left: 90%; }
+
+/* 🔐 Final code box */
+#final-code {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.9);
+    padding: 15px;
+    border-radius: 12px;
+}

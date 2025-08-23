@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Welcome to the Summerhouse</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
         body {
             margin: 0;
@@ -11,36 +12,6 @@
             background-position: center;
             height: 100vh;
             font-family: sans-serif;
-        }
-
-        .button {
-            position: absolute;
-            padding: 10px 20px;
-            background-color: rgba(255,255,255,0.8);
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        #mushroom { top: 60%; left: 20%; }
-        #sourdough { top: 65%; left: 45%; }
-        #boardgame { top: 60%; left: 70%; }
-        #running { top: 75%; left: 80%; }
-
-        #final-code {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255,255,255,0.9);
-            padding: 15px;
-            border-radius: 12px;
-        }
-
-        input[type="text"] {
-            padding: 6px;
-            width: 120px;
         }
     </style>
 </head>

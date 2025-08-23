@@ -1,16 +1,44 @@
-<h2>🌲 Forager's Forest</h2>
-<p>Select the edible mushroom to continue:</p>
-
-<form method="post">
-    {% csrf_token %}
+<!-- mushroom_puzzle.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mushroom Puzzle</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            margin: 0;
+            background: url('{% static "images/forest_background.jpg" %}') no-repeat center center fixed;
+            background-size: cover;
+            font-family: sans-serif;
+        }
+        
+    </style>
+</head>
+<body>
+<div id="landing" class="button" onclick="location.href='{% url 'summerhouse_landing' %}'">🏡 Back to Summerhouse</div>
+<div id="mushroomContainer">
     {% for mushroom in mushrooms %}
-        <div>
-            <img src="{{ mushroom.image.url }}" alt="{{ mushroom.name }}" style="max-width:200px;">
-            <p>{{ mushroom.name }}</p>
-            <input type="radio" name="mushroom" value="{{ mushroom.id }}">
+        <div class="mushroom" style="left:{{ mushroom.x }}px; top:{{ mushroom.y }}px;">
+            <img src="{% static 'images/' %}{{ mushroom.file }}" alt="Mushroom" width="80">
+        {% if mushroom.number %}
+            <span class="number">{{ mushroom.number }}</span>
+        {% endif %}
         </div>
+
     {% endfor %}
+</div>
+
+<form method="post" id="codeBox">
+    {% csrf_token %}
+    <label for="codeInput">Enter the 4-digit mushroom code:</label>
+    <input type="text" id="codeInput" name="code" maxlength="4" value="{{ code_input }}">
     <button type="submit">Submit</button>
+    {% if message %}
+        <p style="color: {% if "Correct" in message %}green{% else %}red{% endif %};">{{ message }}</p>
+    {% endif %}
 </form>
 
-<p>{{ message }}</p>
+</body>
+</html>

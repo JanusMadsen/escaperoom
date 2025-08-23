@@ -1,18 +1,45 @@
-<h2>🍞 The Sourdough Lab</h2>
-<p>Arrange the sourdough baking steps in the correct order:</p>
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sourdough Lab</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f7f3e8;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="landing" class="button" onclick="location.href='{% url 'summerhouse_landing' %}'">🏡 Back to Summerhouse</div>
+
+<h1>🥖 Sourdough Lab</h1>
 
 <form method="post">
     {% csrf_token %}
+    <label>Set Timer (minutes): </label>
+    <input type="number" name="minutes" value="0" required>
+    <br><br>
+
     {% for step in steps %}
-        <label>
-            <select name="step">
-                {% for s in steps %}
-                    <option value="{{ s.id }}">{{ s.name }}</option>
-                {% endfor %}
-            </select>
-        </label><br>
+        <button class="step-button" name="step" value="{{ step.name }}">
+            {{ step.name }}
+        </button>
     {% endfor %}
-    <button type="submit">Submit</button>
+
+    <br><br>
+    <button type="submit" name="reset" class="step-button">🔁 Reset</button>
 </form>
 
-<p>{{ message }}</p>
+<div class="message">{{ state.message }}</div>
+
+{% if state.image %}
+    <img src="{% static 'images/'|add:state.image %}" class="dough-img">
+{% endif %}
+
+</body>
+</html>

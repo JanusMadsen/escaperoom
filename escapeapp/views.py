@@ -1,42 +1,145 @@
 from django.shortcuts import render, redirect
 from .models import Mushroom, SourdoughStep, BoardgameTrivia
 import random
+import time
+from datetime import datetime, timedelta
 
 def mushroom_puzzle(request):
-    mushrooms = list(Mushroom.objects.all())
-    options = random.sample(mushrooms, min(4, len(mushrooms)))  # Show 4 random mushrooms
-    message = ''
+    # Define mushrooms with file, position, and optional number
+    mushrooms = [
+    {"file": "mushroom1.png", "x": 100, "y": 150, "number": "1"},
+    {"file": "mushroom2.png", "x": 250, "y": 400, "number": "2"},
+    {"file": "mushroom3.png", "x": 380, "y": 220, "number": "3"},
+    {"file": "mushroom4.png", "x": 600, "y": 180, "number": "4"},
+    {"file": "mushroom5.png", "x": 150, "y": 550, "number": "5"},
+    {"file": "mushroom6.png", "x": 480, "y": 510, "number": "6"},
+    {"file": "mushroom7.png", "x": 750, "y": 300, "number": "7"},
+    {"file": "mushroom8.png", "x": 620, "y": 600, "number": "8"},
+    {"file": "mushroom9.png", "x": 300, "y": 650, "number": "9"},
+    {"file": "mushroom10.png", "x": 850, "y": 420,"number": "10"},
+    ]
+    correct_code = "5832"
+    message = ""
+    code_input = ""
 
-    if request.method == 'POST':
-        chosen_id = request.POST.get('mushroom')
-        if Mushroom.objects.filter(id=chosen_id, is_correct=True).exists():
-            message = 'Correct! You’ve found the right mushroom.'
-            # Redirect or show next scene
+    if request.method == "POST":
+        code_input = request.POST.get("code", "")
+        if code_input == correct_code:
+            message = "✅ Correct! The mushroom code is accepted."
         else:
-            message = 'Not quite, try again!'
+            message = "❌ That code is not right yet. Keep looking!"
 
-    return render(request, 'mushroom_puzzle.html', {
-        'mushrooms': options,
-        'message': message,
+    return render(request, "mushroom_puzzle.html", {
+        "mushrooms": mushrooms,
+        "message": message,
+        "code_input": code_input,
     })
 
+# Fake wait times in seconds
+WAIT_TIMES = {
+    "feed": 30,
+    "mix": 10,
+    "folds": 5,
+    "shape": 10,
+    "cold_proof": 60,
+}
+
 def sourdough_puzzle(request):
-    steps = list(SourdoughStep.objects.all().order_by('?'))
-    message = ''
+# Define correct sourdough step sequence
+    steps = [
+        {"name": "Feed Starter", "wait": None},
+        {"name": "Mix Dough", "wait": 240},  # 4 hours
+        {"name": "Fold Dough", "wait": 30},  # needs 6–8 repetitions
+        {"name": "Preshape", "wait": 30},
+        {"name": "Shape + Cold Proof", "wait": 30}, 
+        {"name": "Bake", "wait": 720}] # 12 hours
+    
 
-    if request.method == 'POST':
-        submitted_order = request.POST.getlist('step')
-        correct_order = list(SourdoughStep.objects.all().order_by('correct_order').values_list('id', flat=True))
+    if "sourdough_state" not in request.session:
+        request.session["sourdough_state"] = {
+            "current_step": 0,
+            "fold_count": 0,
+            "message": "",
+            "image": "sourdough_starter.png",
+            "failed": False,
+            "completed": False
+        }
 
-        if list(map(int, submitted_order)) == correct_order:
-            message = 'Perfect! The sourdough is baked just right.'
-            # Redirect or next scene logic here
+    state = request.session["sourdough_state"]
+
+    if request.method == "POST":
+        if "reset" in request.POST:
+            del request.session["sourdough_state"]
+            return redirect("sourdough_puzzle")
+
+        if state.get("completed"):
+            state["message"] = "🎉 You already completed the puzzle!"
         else:
-            message = 'Hmm… the dough collapsed. Try again!'
+            entered_minutes = request.POST.get("minutes")
+            selected_step = request.POST.get("step")
 
-    return render(request, 'sourdough_puzzle.html', {
-        'steps': steps,
-        'message': message,
+            try:
+                entered_minutes = int(entered_minutes)
+            except (ValueError, TypeError):
+                state["message"] = "⚠️ Enter a valid number of minutes."
+                request.session.modified = True
+                return render(request, "sourdough_puzzle.html", {"state": state, "steps": steps})
+
+            current = state["current_step"]
+
+            # ✅ prevent out of range access
+            if current >= len(steps):
+                state["message"] = "🎉 Puzzle already finished!"
+                state["completed"] = True
+            else:
+                expected_step = steps[current]["name"]
+                expected_wait = steps[current]["wait"]
+
+                if selected_step != expected_step:
+                    state["message"] = f"❌ Not the correct step right now."
+                    state["failed"] = True
+                else:
+                    # Special folding logic
+                    if selected_step == "Fold Dough":
+                        if abs(entered_minutes - 30) > 10:
+                            state["message"] = "❌ Wrong folding time. Dough collapsed!"
+                            state["failed"] = True
+                        else:
+                            state["fold_count"] += 1
+                            state["message"] = f"✅ Fold {state['fold_count']} done."
+                            state["image"] = "sourdough_fold.png"
+                            if state["fold_count"] >= 6:
+                                state["current_step"] += 1
+                                state["message"] = f"✅ Fold {state['fold_count']} done."
+                                
+                    else:
+                        if expected_wait is None or abs(entered_minutes - expected_wait) <= 10:
+                            state["current_step"] += 1
+                            state["message"] = f"✅ {selected_step} successful!"
+
+                            # ✅ Show rise image right after feeding starter
+                            if selected_step == "Feed Starter":
+                                state["image"] = "sourdough_rise.png"
+                            
+                            elif selected_step == "Shape + Cold Proof":
+                                state["image"] = "coldproofing.png"
+
+                            elif selected_step == "Bake":
+                                state["completed"] = True
+                                if state["failed"]:
+                                    state["image"] = "bread_failed.png"  # flat sourdough if earlier mistake
+                                    state["message"] = "❌ The bread collapsed due to earlier mistakes!"
+                                else:
+                                    state["image"] = "bread_baked.png"   # success
+                                    state["message"] = "🎉 Perfect sourdough bread baked!"
+                        else:
+                            state["message"] = f"❌ Wrong timing for {selected_step}."
+                            state["failed"] = True
+
+    request.session.modified = True
+    return render(request, "sourdough_puzzle.html", {
+        "state": state,
+        "steps": steps
     })
 
 def boardgame_puzzle(request):
