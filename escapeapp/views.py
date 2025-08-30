@@ -15,19 +15,19 @@ def mushroom_puzzle(request):
     {"file": "mushroom6.png", "x": 480, "y": 510, "number": "6"},
     {"file": "mushroom7.png", "x": 750, "y": 300, "number": "7"},
     {"file": "mushroom8.png", "x": 620, "y": 600, "number": "8"},
-    {"file": "mushroom9.png", "x": 300, "y": 650, "number": "9"},
-    {"file": "mushroom10.png", "x": 850, "y": 420,"number": "10"},
+    {"file": "mushroom9.png", "x": 300, "y": 650, "number": "10"},
+    {"file": "mushroom10.png", "x": 850, "y": 420,"number": "9"},
     ]
-    correct_code = "5832"
+    correct_code = "7593"
     message = ""
     code_input = ""
 
     if request.method == "POST":
         code_input = request.POST.get("code", "")
         if code_input == correct_code:
-            message = "✅ Correct! The mushroom code is accepted."
+            message = "✅ Det er korrekt! Du har fundet det rigtige kodeord. hintet er 'x'"
         else:
-            message = "❌ That code is not right yet. Keep looking!"
+            message = "❌ Den kode er ikke korrekt. Mon du har en bog med svampe?"
 
     return render(request, "mushroom_puzzle.html", {
         "mushrooms": mushrooms,
@@ -35,25 +35,17 @@ def mushroom_puzzle(request):
         "code_input": code_input,
     })
 
-# Fake wait times in seconds
-WAIT_TIMES = {
-    "feed": 30,
-    "mix": 10,
-    "folds": 5,
-    "shape": 10,
-    "cold_proof": 60,
-}
 
 def sourdough_puzzle(request):
-# Define correct sourdough step sequence
+    # Definer korrekt surdejssekvens
     steps = [
-        {"name": "Feed Starter", "wait": None},
-        {"name": "Mix Dough", "wait": 240},  # 4 hours
-        {"name": "Fold Dough", "wait": 30},  # needs 6–8 repetitions
+        {"name": "Fodr Surdej", "wait": None},
+        {"name": "Mix Dej", "wait": 240},  # 4 timer
+        {"name": "Fold Dej", "wait": 30},    # 6–8 gentagelser
         {"name": "Preshape", "wait": 30},
-        {"name": "Shape + Cold Proof", "wait": 30}, 
-        {"name": "Bake", "wait": 720}] # 12 hours
-    
+        {"name": "Shape og koldhæv", "wait": 30}, 
+        {"name": "Bag", "wait": 720}         # 12 timer
+    ]
 
     if "sourdough_state" not in request.session:
         request.session["sourdough_state"] = {
@@ -73,7 +65,7 @@ def sourdough_puzzle(request):
             return redirect("sourdough_puzzle")
 
         if state.get("completed"):
-            state["message"] = "🎉 You already completed the puzzle!"
+            state["message"] = "🎉 Du har allerede gennemført surdejspuslespillet!"
         else:
             entered_minutes = request.POST.get("minutes")
             selected_step = request.POST.get("step")
@@ -81,59 +73,66 @@ def sourdough_puzzle(request):
             try:
                 entered_minutes = int(entered_minutes)
             except (ValueError, TypeError):
-                state["message"] = "⚠️ Enter a valid number of minutes."
+                state["message"] = "⚠️ Indtast et gyldigt antal minutter."
                 request.session.modified = True
                 return render(request, "sourdough_puzzle.html", {"state": state, "steps": steps})
 
             current = state["current_step"]
 
-            # ✅ prevent out of range access
+            # ✅ undgå out of range fejl
             if current >= len(steps):
-                state["message"] = "🎉 Puzzle already finished!"
+                state["message"] = "🎉 Puslespillet er allerede færdigt!"
                 state["completed"] = True
             else:
                 expected_step = steps[current]["name"]
                 expected_wait = steps[current]["wait"]
 
                 if selected_step != expected_step:
-                    state["message"] = f"❌ Not the correct step right now."
+                    state["message"] = f"❌ Det er ikke det rigtige trin lige nu."
                     state["failed"] = True
                 else:
-                    # Special folding logic
-                    if selected_step == "Fold Dough":
+                    # Speciel foldelogik
+                    if selected_step == "Fold Dej":
                         if abs(entered_minutes - 30) > 10:
-                            state["message"] = "❌ Wrong folding time. Dough collapsed!"
+                            state["message"] = "❌ Forkert foldetid. Dejen faldt sammen!"
                             state["failed"] = True
                         else:
                             state["fold_count"] += 1
-                            state["message"] = f"✅ Fold {state['fold_count']} done."
+                            state["message"] = f"✅ Fold {state['fold_count']} udført."
                             state["image"] = "sourdough_fold.png"
                             if state["fold_count"] >= 6:
                                 state["current_step"] += 1
-                                state["message"] = f"✅ Fold {state['fold_count']} done."
-                                
+                                state["message"] = f"✅ Fold {state['fold_count']} udført."
                     else:
                         if expected_wait is None or abs(entered_minutes - expected_wait) <= 10:
                             state["current_step"] += 1
-                            state["message"] = f"✅ {selected_step} successful!"
+                            state["message"] = f"✅ {selected_step} lykkedes!"
 
-                            # ✅ Show rise image right after feeding starter
-                            if selected_step == "Feed Starter":
+                            # ✅ Vis hævning efter fodring
+                            if selected_step == "Fodr Surdej":
                                 state["image"] = "sourdough_rise.png"
                             
-                            elif selected_step == "Shape + Cold Proof":
+                            # ✅ Vis mix.png efter Mix Dej
+                            if selected_step == "Mix Dej":
+                                state["image"] = "mix.png"
+
+                            # ✅ Vis hævning efter Preshape
+                            if selected_step == "Preshape":
+                                state["image"] = "preshape.png"                                
+
+                            elif selected_step == "Shape og koldhæv":
                                 state["image"] = "coldproofing.png"
 
-                            elif selected_step == "Bake":
+                            elif selected_step == "Bag":
                                 state["completed"] = True
                                 if state["failed"]:
-                                    state["image"] = "bread_failed.png"  # flat sourdough if earlier mistake
-                                    state["message"] = "❌ The bread collapsed due to earlier mistakes!"
+                                    state["image"] = "bread_failed.png"
+                                    state["message"] = "❌ Brødet faldt sammen pga. tidligere fejl!"
                                 else:
-                                    state["image"] = "bread_baked.png"   # success
-                                    state["message"] = "🎉 Perfect sourdough bread baked!"
+                                    state["image"] = "bread_baked.png"
+                                    state["message"] = "🎉 Perfekt surdejsbrød bagt! hint er 'x'"
                         else:
-                            state["message"] = f"❌ Wrong timing for {selected_step}."
+                            state["message"] = f"❌ Forkert tid for {selected_step}."
                             state["failed"] = True
 
     request.session.modified = True
@@ -142,26 +141,87 @@ def sourdough_puzzle(request):
         "steps": steps
     })
 
+
 def boardgame_puzzle(request):
-    questions = BoardgameTrivia.objects.all()
-    message = ''
-    correct = 0
+    games = [
+        {
+            "name": "Carcassonne",
+            "image": "carcassonne.jpg",
+            "clues": ["Riddere og landevejsrøvere", "floden", "Meeples"]
+        },
+        {
+            "name": "7 Wonders Duel",
+            "image": "7wondersduel.jpg",
+            "clues": ["To spillere", "3 tidsaldrer", "altan i regnvejr"]
+        },
+        {
+            "name": "Splendor Duel",
+            "image": "splendorduel.jpg",
+            "clues": ["3 måder at vinde på", "ædelstene", "kortkøb"]
+        },
+        {
+            "name": "Kvaksalver",
+            "image": "kvaksalver.jpg",
+            "clues": ["gurkemejemand", "natsværmer", "hyldeblomst"]
+        },
+        {
+            "name": "Hitster",
+            "image": "hitster.jpg",
+            "clues": ["Årstal", "ørelyt", "ubegrænsede spillere"]
+        },
+        {
+            "name": "Ticket to Ride",
+            "image": "ticket_to_ride.jpg",
+            "clues": ["hemmelige kort", "mange farver", "togrejser"]
+        },
+    ]
 
-    if request.method == 'POST':
-        total = questions.count()
-        for q in questions:
-            answer = request.POST.get(f'question_{q.id}')
-            if answer == q.correct_option:
-                correct += 1
-        if correct == total:
-            message = 'You’re a true boardgame master!'
+    # Init progress, hvis den ikke findes
+    if "boardgame_progress" not in request.session:
+        request.session["boardgame_progress"] = 0
+
+    progress = request.session.get("boardgame_progress", 0)
+    finished = progress >= len(games)
+    current_game = games[progress] if not finished else None
+
+    message = ""
+
+    if request.method == "POST":
+        if "reset" in request.POST:
+            request.session["boardgame_progress"] = 0   # ✅ rettet
+            message = "🔄 Spillet er nulstillet. Start forfra!"
+            finished = False
+            current_game = games[0]
+        elif finished:
+            return render(request, "boardgame_puzzle.html", {
+                "game": None,
+                "message": "🎉 Tillykke, du klarede alle spil!",
+                "progress": progress,
+                "total_games": len(games),
+                "finished": True,
+                "final_clue": "🔑 Dit clue: B bogstavet i koden",
+            })
         else:
-            message = f'You got {correct} out of {total} correct. Try again!'
+            answer = request.POST.get("answer", "").strip().lower()
+            correct = current_game["name"].lower()
 
-    return render(request, 'boardgame_puzzle.html', {
-        'questions': questions,
-        'message': message,
+            if answer == correct:
+                progress += 1
+                request.session["boardgame_progress"] = progress
+                return redirect("boardgame_puzzle")
+            else:
+                message = "❌ Ikke helt rigtigt. Prøv igen!"
+
+    return render(request, "boardgame_puzzle.html", {
+        "game": current_game,
+        "message": message,
+        "progress": progress,
+        "total_games": len(games),
+        "finished": finished,
+        "final_clue": "🔑 Dit clue: B bogstavet i koden"
     })
+
+
 
 def berlin_half_puzzle(request):
     correct_time = "01:27:20"  # PB
@@ -172,13 +232,13 @@ def berlin_half_puzzle(request):
     if request.method == 'POST':
         answer = request.POST.get('answer')
         if answer.strip() == correct_time:
-            message = "🏁 Perfect! You've just crossed the finish line!"
+            message = "🏁 Perfekt du har fundet den rigtige tid. hintet er 'x'"
             success = True
         elif answer.strip() == strava_time:
-            message = "⏱️ Close! That's your Strava time, but we need the official PB time."
+            message = "⏱️ Tæt på! Det er din Strava tid. Vi skal have din officielle tid fra løbet."
             success = False
         else:
-            message = "Hmm... that’s not quite the time we're looking for."
+            message = "Hmm... det er ikke helt rigtigt. Prøv igen."
 
     return render(request, 'berlin_half_puzzle.html', {
         'message': message,

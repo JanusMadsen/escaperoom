@@ -4,24 +4,17 @@
 <head>
     <title>Sourdough Lab</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-        body {
-            font-family: Arial;
-            background-color: #f7f3e8;
-            text-align: center;
-            padding: 20px;
-        }
-    </style>
+
 </head>
-<body>
+<body class="kitchen-bg">
 
-<div id="landing" class="button" onclick="location.href='{% url 'summerhouse_landing' %}'">🏡 Back to Summerhouse</div>
+<div id="landing" class="button" onclick="location.href='{% url 'summerhouse_landing' %}'">🏡 Tilbage til sommerhuset</div>
 
-<h1>🥖 Sourdough Lab</h1>
+<h1>🥖 Surdejsbageriet</h1>
 
 <form method="post">
     {% csrf_token %}
-    <label>Set Timer (minutes): </label>
+    <label>Sæt tid (minutter): </label>
     <input type="number" name="minutes" value="0" required>
     <br><br>
 

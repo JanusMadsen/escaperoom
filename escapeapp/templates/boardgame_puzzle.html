@@ -1,15 +1,63 @@
-<h2>🎲 The Boardgame Table</h2>
-<p>Answer these boardgame questions to unlock your next clue!</p>
+{% load static %}
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Brætspilsrummet</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="boardgame-bg">
 
-<form method="post">
-    {% csrf_token %}
-    {% for q in questions %}
-        <p><strong>{{ q.question }}</strong></p>
-        <label><input type="radio" name="question_{{ q.id }}" value="A"> {{ q.option_a }}</label><br>
-        <label><input type="radio" name="question_{{ q.id }}" value="B"> {{ q.option_b }}</label><br>
-        <label><input type="radio" name="question_{{ q.id }}" value="C"> {{ q.option_c }}</label><br><br>
-    {% endfor %}
-    <button type="submit">Submit</button>
-</form>
+<div id="landing" class="button" onclick="location.href='{% url 'summerhouse_landing' %}'">🏡 Tilbage til Sommerhuset</div>
 
-<p>{{ message }}</p>
+<div class="boardgame-container">
+    <h1>🎲 Brætspilsrummet</h1>
+
+    <!-- Hvis alle spil er klaret -->
+    {% if finished %}
+        <div class="message">
+            🎉 Tillykke, du gættede alle {{ total_games }} spil! <br>
+            {{ final_clue }}
+        </div>
+    {% else %}
+        <!-- Spil billede -->
+        <img src="{% static 'images/'|add:game.image %}" 
+            alt="Brætspil"
+            class="boardgame-image">
+
+        <!-- Ledetråde -->
+        <div class="clues">
+            <strong>Ledetråde:</strong>
+            {% for clue in game.clues %}
+                <p>• {{ clue }}</p>
+            {% endfor %}
+        </div>
+
+        <!-- Input felt -->
+        <form method="post" id="guessBox">
+            {% csrf_token %}
+            <input type="text" name="answer" placeholder="Skriv spillets navn..." required>
+            <button type="submit">Send</button>
+        </form>
+    {% endif %}
+
+    <!-- Besked -->
+    {% if message %}
+        <div class="message">{{ message }}</div>
+    {% endif %}
+
+    <!-- Progress -->
+    <div class="progress">
+        Fremskridt: {{ progress }} / {{ total_games }}
+    </div>
+
+    <!-- Reset-knap -->
+    <form method="post" style="margin-top:10px;">
+        {% csrf_token %}
+        <input type="hidden" name="reset" value="true">
+        <button type="submit">🔄 Nulstil spil</button>
+    </form>
+</div>
+
+</body>
+</html>

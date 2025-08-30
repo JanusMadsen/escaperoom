@@ -1,23 +1,49 @@
-<h2>🏃‍♀️ The Berlin Half Marathon</h2>
+{% load static %}
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Løbe-gåde</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="running-bg">
 
-<p>
-    The day was warm, the wind was light, and the streets of Berlin were buzzing.
-    Somewhere along the Elbe, you ran like never before.
-</p>
+<div id="landing" class="button" onclick="location.href='{% url 'summerhouse_landing' %}'">🏡 Tilbage til Sommerhuset</div>
 
-<p>
-    Bib number: <strong>14613</strong><br>
-    Location: <em>Berlin</em><br>
-    Year: <strong>2023</strong><br>
-    Distance: <strong>21.1 km</strong>
-</p>
+<div class="running-box">
+    <h1>🏃‍♀️ Løbe-gåden</h1>
+    <p>
+        Løs symbol-ligningerne for at finde tallene.  
+        Når du kender distancen, skal du indtaste den korrekte tid i formatet <code>HH:MM:SS</code>.
+    </p>
+</div>
 
-<p>Enter your official finish time to unlock the next step:</p>
+<div class="running-box">
+    <p><strong>Ligninger:</strong></p>
+    🌙 + 🌙 = 10 <br>
+    🌙 + ⭐ = 14 <br>
+    ⭐ – 🌻 = 4 <br>
+    🌻 + 🍎 = 7 <br>
+    🍎 + 🍋 = 3
+    <p style="margin-top:20px; font-size:18px;">
+    <strong>Distance = 🍎🍋,🍋</strong>
+    </p>
+</div>
 
-<form method="post">
+<!-- Indtast svar -->
+<div class="running-box">
+<form method="post" style="margin-top:20px;">
     {% csrf_token %}
-    <input type="text" name="answer" placeholder="HH:MM:SS">
-    <button type="submit">Submit</button>
+    <label for="answer">Dit svar:</label>
+    <input type="text" id="answer" name="answer" placeholder="HH:MM:SS" required>
+    <button type="submit">Indsend</button>
 </form>
 
-<p style="color: {% if success %}green{% else %}red{% endif %};">{{ message }}</p>
+{% if message %}
+    <div class="message" style="margin-top: 15px;">
+        {{ message }}
+    </div>
+{% endif %}
+</div>
+</body>
+</html>

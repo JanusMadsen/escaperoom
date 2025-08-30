@@ -4,18 +4,9 @@
 <head>
     <title>Welcome to the Summerhouse</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-        body {
-            margin: 0;
-            background-image: url("{% static 'images/sommerhus.jpg' %}");
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            font-family: sans-serif;
-        }
-    </style>
+
 </head>
-<body>
+<body class="summerhouse-bg">
     <div id="mushroom" class="button" onclick="location.href='{% url 'mushroom_puzzle' %}'">🌲 Forest</div>
     <div id="sourdough" class="button" onclick="location.href='{% url 'sourdough_puzzle' %}'">🥖 Kitchen</div>
     <div id="boardgame" class="button" onclick="location.href='{% url 'boardgame_puzzle' %}'">🎲 Game Room</div>

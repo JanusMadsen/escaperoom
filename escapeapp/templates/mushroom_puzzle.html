@@ -1,42 +1,44 @@
 <!-- mushroom_puzzle.html -->
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>Mushroom Puzzle</title>
+    <title>Spiselige svampe bog</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-        body {
-            margin: 0;
-            background: url('{% static "images/forest_background.jpg" %}') no-repeat center center fixed;
-            background-size: cover;
-            font-family: sans-serif;
-        }
-        
-    </style>
 </head>
-<body>
-<div id="landing" class="button" onclick="location.href='{% url 'summerhouse_landing' %}'">🏡 Back to Summerhouse</div>
+<body class="forest-bg">
+<div id="landing" class="button" onclick="location.href='{% url 'summerhouse_landing' %}'">🏡 Tilbage til Sommerhuset</div>
+
 <div id="mushroomContainer">
     {% for mushroom in mushrooms %}
         <div class="mushroom" style="left:{{ mushroom.x }}px; top:{{ mushroom.y }}px;">
-            <img src="{% static 'images/' %}{{ mushroom.file }}" alt="Mushroom" width="80">
-        {% if mushroom.number %}
-            <span class="number">{{ mushroom.number }}</span>
-        {% endif %}
+            <img src="{% static 'images/' %}{{ mushroom.file }}" alt="Svamp" width="80">
+            {% if mushroom.number %}
+                <span class="number">{{ mushroom.number }}</span>
+            {% endif %}
         </div>
-
     {% endfor %}
+
+    <div class="scroll-div">
+        <div class="bogtitel">Spiselige svampe i naturen</div>
+        <img src="{% static 'images/scroll.png' %}" class="scroll-img" alt="Papirrulle">
+        <div class="scroll-text">
+            <div class="scroll-line"><b>Sparassis crispa:</b> Svampens udseende er helt specielt og kan ikke forveksles. Den findes under døende eller helt udgåede nåletræer. Det er en fremragende spisesvamp.</div>
+            <div class="scroll-line"><b>Craterellus cornucopioides:</b> Svampen er nem at kende med sin specielle farve. Den vokser i næringsrige løvskove. Svampen er hul og tynd i kødet med en behagelig krydret duft.</div>
+            <div class="scroll-line"><b>Amanita muscaria:</b> Denne smukke men giftige svamp er velkendt af de fleste. Almindelig fra sommer til efterår i skove og parker, især under gran og birk.</div>
+            <div class="scroll-line"><b>Boletus edulis:</b> Hatten ligner en tvebak og stokken, med lidt fantasi, en vintønde. Svampen egner sig til både frisk brug, tilberedning samt til tørring og frysning.</div>
+        </div>
+    </div>
 </div>
 
 <form method="post" id="codeBox">
     {% csrf_token %}
-    <label for="codeInput">Enter the 4-digit mushroom code:</label>
+    <label for="codeInput">Indtast den 4-cifrede svampe-kode:</label>
     <input type="text" id="codeInput" name="code" maxlength="4" value="{{ code_input }}">
-    <button type="submit">Submit</button>
+    <button type="submit">Indsend</button>
     {% if message %}
-        <p style="color: {% if "Correct" in message %}green{% else %}red{% endif %};">{{ message }}</p>
+        <p style="color: {% if "korrekt" in message %}green{% else %}red{% endif %};">{{ message }}</p>
     {% endif %}
 </form>
 
