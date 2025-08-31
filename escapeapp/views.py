@@ -4,6 +4,17 @@ import random
 import time
 from datetime import datetime, timedelta
 
+def home(request):
+    message = ""
+    if request.method == "POST":
+        answer = request.POST.get("answer", "").strip().lower()
+        if answer == "perikumvej":
+            return redirect("summerhouse_landing")
+        else:
+            message = "❌ Det er ikke den rigtige vej i Nordjylland."
+    
+    return render(request, "home.html", {"message": message})
+
 def mushroom_puzzle(request):
     # Define mushrooms with file, position, and optional number
     mushrooms = [
@@ -25,7 +36,7 @@ def mushroom_puzzle(request):
     if request.method == "POST":
         code_input = request.POST.get("code", "")
         if code_input == correct_code:
-            message = "✅ Det er korrekt! Du har fundet det rigtige kodeord. hintet er 'x'"
+            message = "✅ Det er korrekt! Du har fundet det rigtige kodeord. hintet er 'M'"
         else:
             message = "❌ Den kode er ikke korrekt. Mon du har en bog med svampe?"
 
@@ -41,10 +52,10 @@ def sourdough_puzzle(request):
     steps = [
         {"name": "Fodr Surdej", "wait": None},
         {"name": "Mix Dej", "wait": 240},  # 4 timer
-        {"name": "Fold Dej", "wait": 30},    # 6–8 gentagelser
+        {"name": "Fold Dej", "wait": 30},  # 4–7 gentagelser
         {"name": "Preshape", "wait": 30},
-        {"name": "Shape og koldhæv", "wait": 30}, 
-        {"name": "Bag", "wait": 720}         # 12 timer
+        {"name": "Shape og koldhæv", "wait": 20},
+        {"name": "Bag", "wait": 720}       # 12 timer
     ]
 
     if "sourdough_state" not in request.session:
@@ -87,11 +98,11 @@ def sourdough_puzzle(request):
                 expected_step = steps[current]["name"]
                 expected_wait = steps[current]["wait"]
 
-                if selected_step != expected_step:
+                if selected_step != expected_step and selected_step != "Fold Dej":
                     state["message"] = f"❌ Det er ikke det rigtige trin lige nu."
                     state["failed"] = True
                 else:
-                    # Speciel foldelogik
+                    # 👉 Foldelogik
                     if selected_step == "Fold Dej":
                         if abs(entered_minutes - 30) > 10:
                             state["message"] = "❌ Forkert foldetid. Dejen faldt sammen!"
@@ -100,25 +111,31 @@ def sourdough_puzzle(request):
                             state["fold_count"] += 1
                             state["message"] = f"✅ Fold {state['fold_count']} udført."
                             state["image"] = "sourdough_fold.png"
-                            if state["fold_count"] >= 6:
+
+                            # Når man har foldet mellem 4 og 7 gange → gå videre
+                            if 4 == state["fold_count"]:
                                 state["current_step"] += 1
-                                state["message"] = f"✅ Fold {state['fold_count']} udført."
+                                state["message"] = f"✅ {state['fold_count']} fold udført."
+                            elif 7 >= state["fold_count"] > 4:
+                                state["message"] = f"✅ {state['fold_count']} fold udført."
+                            elif state["fold_count"] > 7:
+                                state["message"] = "❌ Du har foldet for mange gange, dejen blev overarbejdet!"
+                                state["failed"] = True
+
                     else:
                         if expected_wait is None or abs(entered_minutes - expected_wait) <= 10:
                             state["current_step"] += 1
                             state["message"] = f"✅ {selected_step} lykkedes!"
 
-                            # ✅ Vis hævning efter fodring
+                            # ✅ Vis billeder for de enkelte trin
                             if selected_step == "Fodr Surdej":
                                 state["image"] = "sourdough_rise.png"
-                            
-                            # ✅ Vis mix.png efter Mix Dej
-                            if selected_step == "Mix Dej":
+
+                            elif selected_step == "Mix Dej":
                                 state["image"] = "mix.png"
 
-                            # ✅ Vis hævning efter Preshape
-                            if selected_step == "Preshape":
-                                state["image"] = "preshape.png"                                
+                            elif selected_step == "Preshape":
+                                state["image"] = "preshape.png"
 
                             elif selected_step == "Shape og koldhæv":
                                 state["image"] = "coldproofing.png"
@@ -130,7 +147,7 @@ def sourdough_puzzle(request):
                                     state["message"] = "❌ Brødet faldt sammen pga. tidligere fejl!"
                                 else:
                                     state["image"] = "bread_baked.png"
-                                    state["message"] = "🎉 Perfekt surdejsbrød bagt! hint er 'x'"
+                                    state["message"] = "🎉 Perfekt surdejsbrød bagt! hint er 'e'"
                         else:
                             state["message"] = f"❌ Forkert tid for {selected_step}."
                             state["failed"] = True
@@ -140,6 +157,7 @@ def sourdough_puzzle(request):
         "state": state,
         "steps": steps
     })
+
 
 
 def boardgame_puzzle(request):
@@ -199,7 +217,7 @@ def boardgame_puzzle(request):
                 "progress": progress,
                 "total_games": len(games),
                 "finished": True,
-                "final_clue": "🔑 Dit clue: B bogstavet i koden",
+                "final_clue": "🔑 Dit clue: 'i' bogstavet i koden",
             })
         else:
             answer = request.POST.get("answer", "").strip().lower()
@@ -232,7 +250,7 @@ def berlin_half_puzzle(request):
     if request.method == 'POST':
         answer = request.POST.get('answer')
         if answer.strip() == correct_time:
-            message = "🏁 Perfekt du har fundet den rigtige tid. hintet er 'x'"
+            message = "🏁 Perfekt du har fundet den rigtige tid. hintet er 'n'"
             success = True
         elif answer.strip() == strava_time:
             message = "⏱️ Tæt på! Det er din Strava tid. Vi skal have din officielle tid fra løbet."
@@ -254,7 +272,7 @@ def summerhouse_landing(request):
 
     if request.method == 'POST':
         code = request.POST.get('code', '').strip().lower()
-        if code == 'elgkig2023':  # Replace with your real unlock code
+        if code == 'mien':  # Replace with your real unlock code
             return redirect('summerhouse_final')
         else:
             message = "That code doesn’t seem right."

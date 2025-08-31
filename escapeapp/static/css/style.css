@@ -244,3 +244,105 @@ input[type="number"], input[type="text"] {
     font-weight: bold;
 }
 
+/* Finale side */
+.finale-bg {
+    background: url('../images/summerhouse_bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Georgia', serif;
+    color: #2c2c2c;
+    text-align: center;
+    padding: 40px;
+}
+
+.finale-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 700px;
+    margin: 80px auto;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.finale-container h2 {
+    font-size: 2.2em;
+    margin-bottom: 20px;
+}
+
+.finale-container p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.finale-highlight {
+    color: darkgreen;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.finale-button {
+    display: inline-block;
+    background: darkgreen;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.finale-button:hover {
+    background: seagreen;
+}
+
+.note-box {
+    position: absolute;       /* eller fixed hvis den skal blive når man scroller */
+    top: 50%;                 /* midt på siden lodret */
+    right: 5%;                /* lidt ind fra højre kant */
+    transform: translateY(-50%); /* centrerer boksen vertikalt */
+    
+    background-color: #f9f9f9;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 100px 80px;
+    font-size: 1.25em;
+    color: #333;
+    max-width: 350px;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+}
+
+.lock-container {
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 500px;
+    margin: 100px auto;
+    text-align: center;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+}
+
+.lock-container h1 {
+    margin-bottom: 15px;
+}
+
+.lock-container input {
+    padding: 10px;
+    width: 70%;
+    border-radius: 6px;
+    border: 1px solid #aaa;
+}
+
+.lock-container button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 6px;
+    background-color: darkgreen;
+    color: white;
+    cursor: pointer;
+}
+.lock-container button:hover {
+    background-color: green;
+}

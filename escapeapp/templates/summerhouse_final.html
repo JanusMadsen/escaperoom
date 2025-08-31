@@ -1,31 +1,51 @@
-<h2>🏡 Welcome to the Summerhouse</h2>
+{% load static %}
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Sommerhuset – Finale</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="finale-bg">
 
-<p>The forest is quiet. The sourdough is resting. The boardgames are stacked and ready.  
-Your shoes are drying on the porch.</p>
+<div class="finale-container">
+    <h2>🏡 Velkommen til Sommerhuset</h2>
 
-<p>You’ve solved every challenge. And now, here’s your final clue:</p>
+    <p>Skoven er stille. Surdejen hviler. Brætspillene er stablet og klar.  
+    Dine løbesko tørrer ude på terrassen.</p>
 
-<hr>
+    <p>Du har klaret alle udfordringerne – og her er dit sidste clue:</p>
 
-<h3 style="color: darkgreen;">❤️ Mie, this was all made just for you.</h3>
-<p>I hope you’ve enjoyed this little escape. Every puzzle was a piece of our life together.</p>
+    <hr>
 
-<p>
-Whether we’re foraging, baking, running, or just playing games,  
-I love doing all of it with you.
-</p>
+    <h3 class="finale-highlight">❤️ Mie, alt dette er lavet kun til dig.</h3>
+    <p>Jeg håber, du har nydt dette lille escape room.  
+    Hver gåde var et lille stykke af vores liv sammen.</p>
 
-<p>
-And now, you’ve unlocked the final surprise...
-</p>
+    <p>
+    Om vi er i skoven, bager, løber, eller bare spiller spil,  
+    så elsker jeg at gøre det hele med dig.
+    </p>
 
-<!-- Optional: Include a real surprise -->
-<p><a href="https://calendar.google.com/..." target="_blank">🎁 Click here for your weekend getaway</a></p>
+    <p>
+    Og nu har du låst op for den sidste overraskelse...
+    </p>
 
-<!-- Or just wrap up with a final clue -->
-<p><em>PS: Check under the boardgame shelf.</em></p>
+    <!-- Valgfri overraskelse -->
+    <p>
+        <a class="finale-button" href="https://calendar.google.com/..." target="_blank">
+        🎁 Klik her for din weekend-overraskelse
+        </a>
+    </p>
 
-<hr>
+    <!-- Eller slut af med et clue -->
+    <p><em>PS: Kig under brætspilshylden.</em></p>
 
-<p>With love, always ❤️</p>
-<p>– Janus</p>
+    <hr>
+
+    <p>Med kærlighed, altid ❤️</p>
+    <p>– Janus</p>
+</div>
+
+</body>
+</html>
