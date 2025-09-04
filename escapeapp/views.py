@@ -36,7 +36,7 @@ def mushroom_puzzle(request):
     if request.method == "POST":
         code_input = request.POST.get("code", "")
         if code_input == correct_code:
-            message = "✅ Det er korrekt! Du har fundet det rigtige kodeord. hintet er 'M'"
+            message = "✅ Det er korrekt! Du har fundet det rigtige kodeord. hintet er 'G'"
         else:
             message = "❌ Den kode er ikke korrekt. Mon du har en bog med svampe?"
 
@@ -147,7 +147,7 @@ def sourdough_puzzle(request):
                                     state["message"] = "❌ Brødet faldt sammen pga. tidligere fejl!"
                                 else:
                                     state["image"] = "bread_baked.png"
-                                    state["message"] = "🎉 Perfekt surdejsbrød bagt! hint er 'e'"
+                                    state["message"] = "🎉 Perfekt surdejsbrød bagt! hint er 'V'"
                         else:
                             state["message"] = f"❌ Forkert tid for {selected_step}."
                             state["failed"] = True
@@ -217,7 +217,7 @@ def boardgame_puzzle(request):
                 "progress": progress,
                 "total_games": len(games),
                 "finished": True,
-                "final_clue": "🔑 Dit clue: 'i' bogstavet i koden",
+                "final_clue": "🔑 Dit clue: 'a' bogstavet i koden",
             })
         else:
             answer = request.POST.get("answer", "").strip().lower()
@@ -236,7 +236,7 @@ def boardgame_puzzle(request):
         "progress": progress,
         "total_games": len(games),
         "finished": finished,
-        "final_clue": "🔑 Dit clue: B bogstavet i koden"
+        "final_clue": "🔑 Dit clue: 'a' bogstavet i koden"
     })
 
 
@@ -250,7 +250,7 @@ def berlin_half_puzzle(request):
     if request.method == 'POST':
         answer = request.POST.get('answer')
         if answer.strip() == correct_time:
-            message = "🏁 Perfekt du har fundet den rigtige tid. hintet er 'n'"
+            message = "🏁 Perfekt du har fundet den rigtige tid. hintet er 'e'"
             success = True
         elif answer.strip() == strava_time:
             message = "⏱️ Tæt på! Det er din Strava tid. Vi skal have din officielle tid fra løbet."
@@ -272,7 +272,7 @@ def summerhouse_landing(request):
 
     if request.method == 'POST':
         code = request.POST.get('code', '').strip().lower()
-        if code == 'mien':  # Replace with your real unlock code
+        if code == 'gave':  # Replace with your real unlock code
             return redirect('summerhouse_final')
         else:
             message = "That code doesn’t seem right."
